@@ -16,8 +16,11 @@ pub enum Value {
 /// Represents the numeric primitive types that are supported for conversion.
 #[derive(Debug, Clone)]
 pub enum Num {
+    I32(i32),
     I64(i64),
+    U32(u32),
     U64(u64),
+    F32(f32),
     F64(f64),
 }
 
@@ -34,10 +37,16 @@ impl Value {
         let any_val = &value as &dyn Any;
         if let Some(val) = any_val.downcast_ref::<bool>() {
             Value::Bool(*val)
+        } else if let Some(val) = any_val.downcast_ref::<i32>() {
+            Value::Num(Num::I32(*val))
         } else if let Some(val) = any_val.downcast_ref::<i64>() {
             Value::Num(Num::I64(*val))
+        } else if let Some(val) = any_val.downcast_ref::<u32>() {
+            Value::Num(Num::U32(*val))
         } else if let Some(val) = any_val.downcast_ref::<u64>() {
             Value::Num(Num::U64(*val))
+        } else if let Some(val) = any_val.downcast_ref::<f32>() {
+            Value::Num(Num::F32(*val))
         } else if let Some(val) = any_val.downcast_ref::<f64>() {
             Value::Num(Num::F64(*val))
         } else if let Some(val) = any_val.downcast_ref::<&'static str>() {
@@ -59,6 +68,14 @@ impl Value {
         }
     }
 
+    pub fn i32(&self) -> Option<i32> {
+        if let Value::Num(Num::I32(val)) = self {
+            Some(*val)
+        } else {
+            None
+        }
+    }
+
     pub fn i64(&self) -> Option<i64> {
         if let Value::Num(Num::I64(val)) = self {
             Some(*val)
@@ -67,8 +84,24 @@ impl Value {
         }
     }
 
+    pub fn u32(&self) -> Option<u32> {
+        if let Value::Num(Num::U32(val)) = self {
+            Some(*val)
+        } else {
+            None
+        }
+    }
+
     pub fn u64(&self) -> Option<u64> {
         if let Value::Num(Num::U64(val)) = self {
+            Some(*val)
+        } else {
+            None
+        }
+    }
+
+    pub fn f32(&self) -> Option<f32> {
+        if let Value::Num(Num::F32(val)) = self {
             Some(*val)
         } else {
             None
